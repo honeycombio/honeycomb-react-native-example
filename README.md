@@ -35,4 +35,4 @@ npm install --save \
 
 6. See examples in [app/(tabs)/demo.tsx](app/(tabs)/demo.tsx) for how to create manual telemetry.
 
-For more information, including how to configure auto-instrumentation for `fetch` and other libraries, see the [OpenTelemetry React Native documentation](https://opentelemetry.io/docs/demo/services/react-native-app/).
+For more information, including how to configure auto-instrumentation for `fetch` and other libraries, see the [OpenTelemetry Demo documentation for React Native](https://opentelemetry.io/docs/demo/services/react-native-app/).
