@@ -12,7 +12,7 @@ To use this app:
 
 To add Honeycomb to an existing React Native app, follow these steps:
 
-1. Add [metro.config.js](metro.config.js) to the root of your repo. This is required for OpenTelemetry to be able to properly import its dependencies.
+1. Add [metro.config.js](metro.config.js) to the root of your repo and enable `config.resolver.unstable_enablePackageExports`. This is required for OpenTelemetry to be able to properly import its dependencies.
 
 2. Install OpenTelemetry dependencies to your app.
 ```bash
