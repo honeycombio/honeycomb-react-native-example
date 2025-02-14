@@ -2,6 +2,14 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app) demonstrating how to integrate Honeycomb into a React Native app using OpenTelemetry SDKs.
 
+## Setup and Run This App
+
+To use this app:
+
+1. Run `npm ci` to install dependencies.
+2. Update the `serviceName` and `honeycombKey` in [app/honeycomb.tsx](app/honeycomb.tsx).
+3. Run `npm run ios`
+
 To add Honeycomb to an existing React Native app, follow these steps:
 
 1. Add [metro.config.js](metro.config.js) to the root of your repo. This is required for OpenTelemetry to be able to properly import its dependencies.
