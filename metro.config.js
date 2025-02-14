@@ -9,7 +9,7 @@ const { getDefaultConfig } = require("expo/metro-config");
 /** @type {import('expo/metro-config').MetroConfig} */
 const config = getDefaultConfig(__dirname);
 
-// Needed so that we can make use of the alternative @opentelemetry/semantic-conventions/incubating export
+// Needed so that we can make use of @opentelemetry package.json "exports" field
 // See: https://reactnative.dev/blog/2023/06/21/package-exports-support
 config.resolver.unstable_enablePackageExports = true;
 
