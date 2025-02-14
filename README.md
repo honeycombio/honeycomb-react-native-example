@@ -18,13 +18,13 @@ To add Honeycomb to an existing React Native app, follow these steps:
 ```bash
 npm install --save \
     @opentelemetry/api \
-    @opentelemetry/api-logs \
-    @opentelemetry/sdk-logs \
+    @opentelemetry/api-logs@0.55.0 \
+    @opentelemetry/sdk-logs@0.55.0 \
     @opentelemetry/sdk-metrics \
     @opentelemetry/sdk-trace-web \
-    @opentelemetry/exporter-logs-otlp-http \
-    @opentelemetry/exporter-metrics-otlp-http \
-    @opentelemetry/exporter-trace-otlp-http
+    @opentelemetry/exporter-logs-otlp-http@0.55.0 \
+    @opentelemetry/exporter-metrics-otlp-http@0.55.0 \
+    @opentelemetry/exporter-trace-otlp-http@0.55.0
 ```
 
 3. Add OpenTelemetry configuration code as found in [app/honeycomb.tsx](app/honeycomb.tsx). This code can be customized as desired.
