@@ -38,7 +38,6 @@ function getSessionId(): string | null {
 class SessionIdSpanProcessor implements SpanProcessor {
     onStart(span: Span, parentContext: Context): void {
         let sessionId = getSessionId();
-        console.log('using sessionId: ' + sessionId);
         if (sessionId) {
             span.setAttribute('session.id', sessionId);
         }
