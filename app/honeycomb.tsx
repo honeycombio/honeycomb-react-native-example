@@ -1,10 +1,14 @@
 
-import { metrics } from '@opentelemetry/api';
+import { NativeModules } from 'react-native';
+import { Context, metrics } from '@opentelemetry/api';
 import { logs } from '@opentelemetry/api-logs';
 
 import {
     ConsoleSpanExporter,
+    ReadableSpan,
     SimpleSpanProcessor,
+    Span,
+    SpanProcessor,
     WebTracerProvider,
 } from "@opentelemetry/sdk-trace-web";
 
@@ -26,11 +30,34 @@ import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-http";
 
+function getSessionId(): string | null {
+    const {HoneycombModule} = NativeModules;
+    return HoneycombModule.getSessionId();
+}
+
+class SessionIdSpanProcessor implements SpanProcessor {
+    onStart(span: Span, parentContext: Context): void {
+        let sessionId = getSessionId();
+        console.log('using sessionId: ' + sessionId);
+        if (sessionId) {
+            span.setAttribute('session.id', sessionId);
+        }
+    }
+    onEnd(span: ReadableSpan): void {
+    }
+    forceFlush(): Promise<void> {
+        return Promise.resolve();
+    }
+    shutdown(): Promise<void> {
+        return Promise.resolve();
+    }
+}
+
 export default function configureHoneycomb() {
     console.log("OpenTelemetry is initializing...");
 
     const serviceName = "reactnative-demo";
-    const honeycombKey = "YOUR_KEY_HERE";
+    const honeycombKey = "YOUR-API-KEY-HERE";
     const honeycombURL = "https://api.honeycomb.io";
 
     const resource = new Resource({
@@ -46,6 +73,7 @@ export default function configureHoneycomb() {
     const traceProvider = new WebTracerProvider({
         resource,
         spanProcessors: [
+            new SessionIdSpanProcessor(),
             new SimpleSpanProcessor(
                 new OTLPTraceExporter({ headers, url: `${honeycombURL}/v1/traces` })
             ),

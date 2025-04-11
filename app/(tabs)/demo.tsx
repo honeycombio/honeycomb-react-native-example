@@ -1,12 +1,31 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Button, StyleSheet } from 'react-native';
+import { Button, NativeModules, StyleSheet } from 'react-native';
 
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 import { trace, metrics } from '@opentelemetry/api';
-import {logs} from '@opentelemetry/api-logs'
+import { logs } from '@opentelemetry/api-logs'
+
+function sendNativeSpan(parentId: string, traceId: string) {
+  const {HoneycombModule} = NativeModules;
+  HoneycombModule.sendNativeSpanWithParent(parentId, traceId);
+}
+
+function onCreateNativeSpanClick() {
+  trace
+    .getTracer("javascript sdk")
+    .startActiveSpan("parent span", span => {
+      try {
+        let parentId = span.spanContext().spanId;
+        let traceId = span.spanContext().traceId;
+        sendNativeSpan(parentId, traceId);
+      } finally {
+        span.end();
+      }
+    });
+}
 
 function onTraceClick() {
   let span = trace.getTracer("react-native-demo").startSpan("button-click");
@@ -31,7 +50,12 @@ function onLogClick() {
     attributes: {
         name: "react-log",
     },
-});
+  });
+}
+
+function getSessionId(): string {
+  const { HoneycombModule } = NativeModules;
+  return HoneycombModule.getSessionId();
 }
 
 export default function DemoScreen() {
@@ -42,6 +66,13 @@ export default function DemoScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Demo</ThemedText>
       </ThemedView>
+
+      <Button
+        onPress={onCreateNativeSpanClick}
+        title="Send a native trace."
+        color="#841584"
+        accessibilityLabel="native_trace_demo_button"
+      />
 
       <Button
         onPress={onTraceClick}
