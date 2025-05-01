@@ -212,44 +212,16 @@ In Android, it's easy to add a function to your native module to get the session
 fun getSessionId(): String? = otel()?.rumSessionId
 ```
 
-In iOS, it's a little more complicated. Start by adding a property to your Honeycomb wrapper to
-keep track of the ID.
+And in iOS, it's almost as easy. Add a method to your Swift wrapper.
 ```swift
-    private let sessionLock = NSLock()
-
-    private var _sessionId: String? = nil
-
-    @objc public var sessionId: String? {
-        get {
-            return sessionLock.withLock {
-                _sessionId
-            }
-        }
-        set(value) {
-            sessionLock.withLock {
-                _sessionId = value
-            }
-        }
+@objc public var sessionId: String? {
+    get {
+        return Honeycomb.currentSession()?.id
     }
+}
 ```
 
-Then, when configuring the SDK, add a listener to keep the member up to date.
-
-```swift
-    NotificationCenter.default.addObserver(
-        forName: .sessionStarted,
-        object: nil,
-        queue: .main
-    ) { notification in
-        guard let session = notification.userInfo?["session"] as? HoneycombSession else {
-          self.sessionId = nil
-          return
-        }
-        self.sessionId = session.id
-    }
-```
-
-Next, add a method to the Objective C native module code to call the wrapper.
+Then add a method to the Objective C native module code to call the wrapper.
 
 ```objectivec
 RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getSessionId) {
