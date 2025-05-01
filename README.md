@@ -229,24 +229,14 @@ RCT_EXPORT_BLOCKING_SYNCHRONOUS_METHOD(getSessionId) {
 }
 ```
 
-In your JavaScript layer, create the `SpanProcessor`:
+In your JavaScript layer, create a `SessionProvider`:
 
 ```typescript
-function getSessionId(): string | null {
-    const {YourModule} = NativeModules;
-    return YourModule.getSessionId();
-}
-
-class SessionIdSpanProcessor implements SpanProcessor {
-    onStart(span: Span, parentContext: Context): void {
-        let sessionId = getSessionId();
-        if (sessionId) {
-            span.setAttribute('session.id', sessionId);
-        }
+class SessionIdProvider implements SessionProvider {
+    getSessionId(): string | null {
+        const {HoneycombModule} = NativeModules;
+        return HoneycombModule.getSessionId();
     }
-    onEnd(span: ReadableSpan): void {}
-    forceFlush(): Promise<void> { return Promise.resolve(); }
-    shutdown(): Promise<void> { return Promise.resolve(); }
 }
 ```
 
@@ -256,7 +246,7 @@ Finally, update the configuration code to pass in the new processor:
     const traceProvider = new WebTracerProvider({
         resource,
         spanProcessors: [
-            new SessionIdSpanProcessor(),
+            createSessionSpanProcessor(new SessionIdProvider()),
             new SimpleSpanProcessor(
                 new OTLPTraceExporter({ headers, url: `${honeycombURL}/v1/traces` })
             ),
