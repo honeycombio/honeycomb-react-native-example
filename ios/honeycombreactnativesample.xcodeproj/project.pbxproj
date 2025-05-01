@@ -563,7 +563,7 @@
 			repositoryURL = "https://github.com/honeycombio/honeycomb-opentelemetry-swift/";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.0.7;
+				minimumVersion = 0.0.9;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
